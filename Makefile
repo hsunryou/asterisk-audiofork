@@ -22,6 +22,7 @@ OPTIMIZE:=-O2
 DEBUG:=-g
 
 #LIBS+=-
+INCLUDEDIR += -I./ -I./../asterisk-20.7.0/include
 CFLAGS+=-pipe -fPIC -Wall -Wextra -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -D_REENTRANT -D_GNU_SOURCE -DAST_MODULE_SELF_SYM=__internal_app_audiofork_self
 
 all: app_audiofork.so
@@ -33,7 +34,7 @@ all: app_audiofork.so
 	@echo " +-------------------------------------------+"
 
 app_audiofork.o: app_audiofork.c
-	$(CC) $(CFLAGS) $(DEBUG) $(OPTIMIZE) -c -o $@ $*.c
+	$(CC) ${INCLUDEDIR} $(CFLAGS) $(DEBUG) $(OPTIMIZE) -c -o $@ $*.c
 
 app_audiofork.so: app_audiofork.o
 	$(CC) -shared -Xlinker -x -o $@ $< $(LIBS)
