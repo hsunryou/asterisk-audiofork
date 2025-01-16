@@ -491,6 +491,20 @@ static enum ast_websocket_result audiofork_ws_connect(struct audiofork *audiofor
 		audiofork->websocket = ast_websocket_client_create(audiofork->audiofork_ds->wsserver, "echo", NULL, &result);
 	}
 
+	// Connected
+	if (result == WS_OK) {
+		ast_verb(2, "<%s> [AudioFork] (%s) Connected to WebSocket Server(%s) \n", ast_channel_name(audiofork->autochan->chan), audiofork->direction_string, audiofork->audiofork_ds->wsserver);
+
+		// 
+		ast_verb(2, "<%s> [AudioFork] (%s) Connected to WebSocket Server(%s) \n", ast_channel_name(audiofork->autochan->chan), audiofork->direction_string, audiofork->audiofork_ds->wsserver);
+		uint64_t len = strlen(ast_channel_name(audiofork->autochan->chan));
+		ast_websocket_write(audiofork->websocket, AST_WEBSOCKET_OPCODE_TEXT, ast_channel_name(audiofork->autochan->chan), len);
+		// 
+
+	} else {
+		ast_verb(2, "<%s> [AudioFork] (%s) Not Connected to WebSocket Server(%s) \n", ast_channel_name(audiofork->autochan->chan), audiofork->direction_string, audiofork->audiofork_ds->wsserver);
+	}
+
 	return result;
 }
 
@@ -1017,7 +1031,6 @@ static int audiofork_exec(struct ast_channel *chan, const char *data)
 	}
 
 	/* If there are no file writing arguments/options for the mix monitor, send a warning message and return -1 */
-
 	if (ast_strlen_zero(args.wsserver)) {
 		ast_log(LOG_WARNING, "AudioFork requires an argument (wsserver)\n");
 		return -1;

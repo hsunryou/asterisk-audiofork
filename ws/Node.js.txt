@@ -1,0 +1,58 @@
+
+## Node.js 기반 WebSocket Server 구성
+
+    1. 개발 환경 : 192.168.1.154 + 192.168.1.156
+    2. Flow
+        1) 192.168.1.154     --> 192.168.1.156
+        2) asterisk 20.11.1  --> /home/ippbx/AI/ws/index1.js
+
+
+##
+## index1.js 기반 테스트 
+
+    1. 기능
+        1) WebSocket 기반으로 Voice Stream Data를 수신하여, audio.raw 파일로 저장하는 기능
+
+
+    2. 설치 및 실행
+        1) npm install ws
+        2) Default Listen Port = 9090
+           필요 시, Default 정보 수정 필요
+        3) node index1.js
+
+    3. Asterisk 설정
+        1) 아래와 같이 내선에서 '0000' Dial 시, AudioFork 기능 점검
+            [outbound]
+            ...
+            exten => _0000,1,Noop(CALLER=${CALLERID(NUM)})
+            same  => n,Answer
+            ;; AudioFork
+            same  => n,AudioFork(ws://localhost:9090/)
+            same  => n,PlayBack(vm-intro)
+            same  => n,Wait(1)
+            same  => n,Hangup
+
+
+    4. 기능 점검(tcpdump)
+        tcpdump -i enp3s0f0 -s 65535 -w /tmp/ws1.pcap
+
+
+
+
+##
+## index2.js 기반 테스트
+
+    1. 기능
+        1) Asterisk 기반 발신채널 + 수신채널 Voice Stream Data를 수신하는 기능
+
+
+    2. 설치 및 실행
+        1) 상동
+
+    3. Asterisk 설정
+
+
+    4. 기능 점검(tcpdump)
+        tcpdump -i enp3s0f0 -s 65535 -w /tmp/ws2.pcap
+
+
